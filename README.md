@@ -107,3 +107,22 @@ After deployment, the app displays:
 - Blocks upload if compressed file remains above 2.3 MB.
 - Server rejects anything above 2.6 MB.
 - If you still see payload error and do not see Original/Upload size box, you are still running an old `app/page.jsx`.
+
+## v7 Real Canvas Mode
+Final image is now created in the browser with Canvas. This removes server-side SVG font boxes and Vercel payload problems. API is used only for optional slogan generation.
+
+
+## v8 Photo Enhancer
+
+This version adds real client-side photo enhancement:
+- Auto levels based on image histogram
+- Shadow recovery
+- Highlight control
+- Contrast correction
+- Vibrance and saturation correction
+- Warmth correction
+- Real unsharp-mask sharpening
+- Enhancement modes: Natural, Pro, Premium
+- Output size modes: 1600, 1800, 2200
+
+The app still keeps the original scene real and does not regenerate faces or equipment.
