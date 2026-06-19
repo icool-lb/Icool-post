@@ -8,6 +8,11 @@
 
 * { box-sizing: border-box; }
 
+html, body {
+  min-height: 100%;
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   background: radial-gradient(circle at top, #ffffff 0, var(--bg) 55%, #dfe9f3 100%);
@@ -30,6 +35,8 @@ main {
 }
 
 .card {
+  position: relative;
+  z-index: 1;
   background: rgba(255,255,255,.88);
   border: 1px solid rgba(0,63,125,.12);
   border-radius: 22px;
@@ -50,6 +57,11 @@ h1 {
   line-height: 1;
   margin: 0 0 14px;
   letter-spacing: -1.5px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 22px;
 }
 
 p {
@@ -91,6 +103,9 @@ button {
   font-size: 17px;
   cursor: pointer;
   box-shadow: 0 12px 28px rgba(0,86,150,.25);
+  touch-action: manipulation;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:disabled {
@@ -98,7 +113,81 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.secondaryBtn {
+  background: #eef5fb;
+  color: var(--deep-blue);
+  box-shadow: none;
+  border: 1px solid #c9d6e3;
+}
+
+.settingsFab {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 999999;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  margin: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  background: #003f7d;
+  color: #fff;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.settingsModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0,0,0,.48);
+  pointer-events: auto;
+  padding: 18px;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+.settingsPanel {
+  width: min(560px, 100%);
+  max-height: 86vh;
+  overflow-y: auto;
+  background: #fff;
+  color: var(--text);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0 25px 70px rgba(0,0,0,.30);
+  pointer-events: auto;
+}
+
+.settingsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.closeBtn {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border-radius: 999px;
+  background: #f0f3f7;
+  color: #102033;
+  box-shadow: none;
+  font-size: 30px;
+  line-height: 1;
+}
+
 .previewBox {
+  position: relative;
+  z-index: 1;
   min-height: 480px;
   display: grid;
   place-items: center;
@@ -111,6 +200,7 @@ button:disabled {
   object-fit: contain;
   border-radius: 16px;
   box-shadow: 0 12px 42px rgba(16,32,51,.18);
+  pointer-events: auto;
 }
 
 .note {
@@ -142,6 +232,29 @@ button:disabled {
 }
 
 @media (max-width: 900px) {
+  main {
+    width: min(100vw - 18px, 1100px);
+    padding-top: 20px;
+  }
+
   .hero, .grid { grid-template-columns: 1fr; }
+
   .previewBox { min-height: 320px; }
+
+  .settingsPanel {
+    width: 100%;
+    border-radius: 24px 24px 0 0;
+  }
+}
+
+
+.sizeInfo {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f7fbff;
+  border: 1px solid #c9d6e3;
+  color: #33485d;
+  font-size: 14px;
+  line-height: 1.5;
 }
