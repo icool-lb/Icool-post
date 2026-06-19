@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const VERSION = "v10 Pro Canvas Branding";
+const VERSION = "v11 Transparent Logo + Footer Fix";
 
 const defaultSettings = {
   industry: "auto",
@@ -237,21 +237,62 @@ function drawFooterLandscape(ctx, w, h, fh) {
 }
 
 function drawFooterPortrait(ctx, w, h, fh) {
-  const blue="#005696", orange="#f25b22", white="#fff";
+  const blue = "#005696", orange = "#f25b22", white = "#fff";
   const y = h - fh;
-  const topH = fh * .56;
+
+  // Portrait footer uses two clean rows:
+  // top blue row = location + mobile
+  // bottom orange row = services
+  const topH = fh * 0.62;
+  const bottomH = fh - topH;
+
   ctx.save();
-  ctx.fillStyle = blue; ctx.fillRect(0, y, w, topH);
-  ctx.fillStyle = orange; ctx.fillRect(0, y + topH, w, fh - topH);
-  ctx.fillStyle = white; ctx.textBaseline = "middle";
-  const icon = Math.max(22, topH*.36);
-  const fs = fitText(ctx, "Mobile: 03 715 512", w*.34, Math.max(18, topH*.28), 700);
-  ctx.font = `700 ${fs}px Arial, Helvetica, sans-serif`;
-  const cy = y + topH*.52;
-  const x1 = w*.075; ctx.beginPath(); ctx.arc(x1, cy, icon*.52, 0, Math.PI*2); ctx.fillStyle=white; ctx.fill(); pin(ctx, x1, cy, icon*.9, blue); ctx.fillStyle=white; ctx.fillText("Lebanon", w*.12, cy);
-  const x2 = w*.51; ctx.beginPath(); ctx.arc(x2, cy, icon*.52, 0, Math.PI*2); ctx.fillStyle=white; ctx.fill(); phone(ctx, x2, cy, icon*.9, blue); ctx.fillStyle=white; ctx.fillText("03 715 512", w*.555, cy);
-  const service = "HVAC SOLAR MEP SOLUTIONS"; const sfs = fitText(ctx, service, w*.88, Math.max(17, (fh-topH)*.38), 800);
-  ctx.font = `800 ${sfs}px Arial, Helvetica, sans-serif`; ctx.textAlign="center"; ctx.fillText(service, w/2, y + topH + (fh-topH)*.53); ctx.textAlign="left";
+  ctx.fillStyle = blue;
+  ctx.fillRect(0, y, w, topH);
+
+  ctx.fillStyle = orange;
+  ctx.fillRect(0, y + topH, w, bottomH);
+
+  ctx.fillStyle = white;
+  ctx.textBaseline = "middle";
+
+  const cy = y + topH * 0.52;
+  const icon = Math.max(18, Math.min(30, topH * 0.31));
+
+  // Lebanon group
+  const locText = "Lebanon";
+  let locSize = fitText(ctx, locText, w * 0.23, Math.max(14, topH * 0.25), 700);
+  ctx.font = `700 ${locSize}px Arial, Helvetica, sans-serif`;
+  const x1 = w * 0.070;
+  ctx.beginPath();
+  ctx.arc(x1, cy, icon * 0.52, 0, Math.PI * 2);
+  ctx.fillStyle = white;
+  ctx.fill();
+  pin(ctx, x1, cy, icon * 0.90, blue);
+  ctx.fillStyle = white;
+  ctx.fillText(locText, w * 0.115, cy);
+
+  // Mobile group
+  const phoneText = "Mobile: 03 715 512";
+  let phoneSize = fitText(ctx, phoneText, w * 0.37, Math.max(13, topH * 0.23), 700);
+  ctx.font = `700 ${phoneSize}px Arial, Helvetica, sans-serif`;
+  const x2 = w * 0.490;
+  ctx.beginPath();
+  ctx.arc(x2, cy, icon * 0.52, 0, Math.PI * 2);
+  ctx.fillStyle = white;
+  ctx.fill();
+  phone(ctx, x2, cy, icon * 0.90, blue);
+  ctx.fillStyle = white;
+  ctx.fillText(phoneText, w * 0.535, cy);
+
+  // Services row
+  const service = "HVAC SOLAR MEP SOLUTIONS";
+  const sfs = fitText(ctx, service, w * 0.86, Math.max(14, bottomH * 0.40), 800);
+  ctx.font = `800 ${sfs}px Arial, Helvetica, sans-serif`;
+  ctx.textAlign = "center";
+  ctx.fillText(service, w / 2, y + topH + bottomH * 0.53);
+  ctx.textAlign = "left";
+
   ctx.restore();
 }
 
@@ -294,10 +335,10 @@ async function makeImage({ file, settings, logoImage, setStage }) {
     const fh = footerHeight(w, h, Number(settings.footerScale)/100);
     const margin = Math.round(w*.035);
     const portrait = h > w * 1.1;
-    const logoW = Math.round((portrait ? w*.30 : w*.25) * (Number(settings.logoScale)/100));
+    const logoW = Math.round((portrait ? w*.25 : w*.25) * (Number(settings.logoScale)/100));
     const logoRatio = logoImage ? logoImage.naturalHeight / logoImage.naturalWidth : .35;
     const logoH = Math.round(logoW * logoRatio);
-    const fontSize = Math.max(22, Math.round(w * (portrait ? .043 : .030)));
+    const fontSize = Math.max(22, Math.round(w * (portrait ? .038 : .030)));
     ctx.font = `800 italic ${fontSize}px Arial, Helvetica, sans-serif`;
     let sloganLines = slogan ? wrap(ctx, slogan, w - margin*2, 2) : [];
     const lineH = Math.round(fontSize * 1.25);
@@ -327,17 +368,17 @@ export default function Page() {
   const [showSettings, setShowSettings] = useState(true);
   const logoRef = useRef(null);
 
-  useEffect(() => { try { const s = localStorage.getItem("icoolV10Settings"); if (s) setSettings({ ...defaultSettings, ...JSON.parse(s) }); } catch {} }, []);
+  useEffect(() => { try { const s = localStorage.getItem("icoolV11Settings"); if (s) setSettings({ ...defaultSettings, ...JSON.parse(s) }); } catch {} }, []);
   useEffect(() => { loadImageFromUrl("/icool-logo.png").then(img => { logoRef.current = img; }); }, []);
   const canGenerate = useMemo(() => !!file && !working, [file, working]);
 
-  function update(k, v) { setSettings(prev => { const next = { ...prev, [k]: v }; try { localStorage.setItem("icoolV10Settings", JSON.stringify(next)); } catch {} return next; }); }
+  function update(k, v) { setSettings(prev => { const next = { ...prev, [k]: v }; try { localStorage.setItem("icoolV11Settings", JSON.stringify(next)); } catch {} return next; }); }
   function selectFile(e) { const f = e.target.files?.[0]; setResult(""); if (preview) URL.revokeObjectURL(preview); if (!f) { setFile(null); setPreview(""); return; } setFile(f); setPreview(URL.createObjectURL(f)); }
   async function generate() { if (!file) return; setWorking(true); setStage("Starting..."); setResult(""); try { const dataUrl = await makeImage({ file, settings, logoImage: logoRef.current, setStage }); setResult(dataUrl); setStage(""); } catch (e) { alert("Generation failed: " + e.message); setStage(""); } finally { setWorking(false); } }
   async function share() { if (!result) return; const blob = await fetch(result).then(r => r.blob()); const sf = new File([blob], "icool-branded-photo.jpg", { type: "image/jpeg" }); if (navigator.canShare?.({ files: [sf] })) await navigator.share({ files: [sf], title: "iCOOL Branded Photo" }); else window.open(result, "_blank"); }
 
   return <main>
-    <header className="hero"><div><img className="brandLogo" src="/icool-logo.png" alt="iCOOL"/><h1>iCOOL Photo Branding App</h1><p>Professional real-photo enhancement, transparent logo, clean footer and smart slogan. No generate/generator API.</p></div><div className="versionCard"><b>{VERSION}</b><span>Portrait and landscape footer fixed. Logo has no background plate.</span></div></header>
-    <section className="grid"><div className="card controls"><label>Upload photo</label><input type="file" accept="image/*" onChange={selectFile}/>{file && <div className="fileInfo">Selected: {file.name}<br/>Size: {mb(file.size)}</div>}<button type="button" disabled={!canGenerate} onClick={generate}>{working ? (stage || "Processing...") : "Generate Branded Photo"}</button><button type="button" className="secondaryBtn" onClick={() => setShowSettings(v=>!v)}>{showSettings ? "Hide Settings" : "Open Settings"}</button>{showSettings && <div className="settingsBox"><label>Project type</label><select value={settings.industry} onChange={e=>update("industry", e.target.value)}><option value="auto">Auto / General</option><option value="hvac">HVAC</option><option value="solar">Solar</option><option value="mep">MEP / Electrical</option><option value="lighting">Lighting</option><option value="inventory">Inventory / Stock</option><option value="team">Team / People</option></select><label>Enhancement strength</label><select value={settings.enhancement} onChange={e=>update("enhancement", e.target.value)}><option value="natural">Natural</option><option value="pro">Pro</option><option value="premium">Premium - recommended</option></select><label>Cleanup strength</label><select value={settings.cleanup} onChange={e=>update("cleanup", e.target.value)}><option value="light">Light</option><option value="medium">Medium</option><option value="strong">Strong - tiny dirt cleanup</option></select><label>Output size</label><select value={settings.outputSize} onChange={e=>update("outputSize", e.target.value)}><option value="1600">Fast</option><option value="2200">Professional</option><option value="2600">High quality</option></select><label>Logo scale</label><select value={settings.logoScale} onChange={e=>update("logoScale", e.target.value)}><option value="85">Small</option><option value="100">Normal</option><option value="115">Large</option></select><label>Footer scale</label><select value={settings.footerScale} onChange={e=>update("footerScale", e.target.value)}><option value="90">Slim</option><option value="100">Normal</option><option value="115">Large</option></select><label>Show slogan</label><select value={settings.showSlogan} onChange={e=>update("showSlogan", e.target.value)}><option value="yes">Yes</option><option value="no">No, logo only</option></select><label>Optional slogan override</label><input type="text" placeholder="Leave empty for smart slogan" value={settings.customSlogan} onChange={e=>update("customSlogan", e.target.value)}/><button type="button" className="secondaryBtn" onClick={()=>{setSettings(defaultSettings); localStorage.removeItem("icoolV10Settings")}}>Reset Settings</button></div>}</div><div className="card previewCard"><div className="previewBox">{result ? <img src={result} alt="Final branded result"/> : preview ? <img src={preview} alt="Original preview"/> : <div className="placeholder">Choose a project photo to start.</div>}</div>{result && <div className="actions"><a href={result} download="icool-branded-photo.jpg">Download</a><button type="button" onClick={share}>Share</button></div>}</div></section>
+    <header className="hero"><div><img className="brandLogo" src="/icool-logo.png" alt="iCOOL"/><h1>iCOOL Photo Branding App</h1><p>Professional real-photo enhancement, transparent logo, clean footer and smart slogan. No generate/generator API.</p></div><div className="versionCard"><b>{VERSION}</b><span>Real transparent logo fixed. Portrait footer no longer overlaps.</span></div></header>
+    <section className="grid"><div className="card controls"><label>Upload photo</label><input type="file" accept="image/*" onChange={selectFile}/>{file && <div className="fileInfo">Selected: {file.name}<br/>Size: {mb(file.size)}</div>}<button type="button" disabled={!canGenerate} onClick={generate}>{working ? (stage || "Processing...") : "Generate Branded Photo"}</button><button type="button" className="secondaryBtn" onClick={() => setShowSettings(v=>!v)}>{showSettings ? "Hide Settings" : "Open Settings"}</button>{showSettings && <div className="settingsBox"><label>Project type</label><select value={settings.industry} onChange={e=>update("industry", e.target.value)}><option value="auto">Auto / General</option><option value="hvac">HVAC</option><option value="solar">Solar</option><option value="mep">MEP / Electrical</option><option value="lighting">Lighting</option><option value="inventory">Inventory / Stock</option><option value="team">Team / People</option></select><label>Enhancement strength</label><select value={settings.enhancement} onChange={e=>update("enhancement", e.target.value)}><option value="natural">Natural</option><option value="pro">Pro</option><option value="premium">Premium - recommended</option></select><label>Cleanup strength</label><select value={settings.cleanup} onChange={e=>update("cleanup", e.target.value)}><option value="light">Light</option><option value="medium">Medium</option><option value="strong">Strong - tiny dirt cleanup</option></select><label>Output size</label><select value={settings.outputSize} onChange={e=>update("outputSize", e.target.value)}><option value="1600">Fast</option><option value="2200">Professional</option><option value="2600">High quality</option></select><label>Logo scale</label><select value={settings.logoScale} onChange={e=>update("logoScale", e.target.value)}><option value="85">Small</option><option value="100">Normal</option><option value="115">Large</option></select><label>Footer scale</label><select value={settings.footerScale} onChange={e=>update("footerScale", e.target.value)}><option value="90">Slim</option><option value="100">Normal</option><option value="115">Large</option></select><label>Show slogan</label><select value={settings.showSlogan} onChange={e=>update("showSlogan", e.target.value)}><option value="yes">Yes</option><option value="no">No, logo only</option></select><label>Optional slogan override</label><input type="text" placeholder="Leave empty for smart slogan" value={settings.customSlogan} onChange={e=>update("customSlogan", e.target.value)}/><button type="button" className="secondaryBtn" onClick={()=>{setSettings(defaultSettings); localStorage.removeItem("icoolV11Settings")}}>Reset Settings</button></div>}</div><div className="card previewCard"><div className="previewBox">{result ? <img src={result} alt="Final branded result"/> : preview ? <img src={preview} alt="Original preview"/> : <div className="placeholder">Choose a project photo to start.</div>}</div>{result && <div className="actions"><a href={result} download="icool-branded-photo.jpg">Download</a><button type="button" onClick={share}>Share</button></div>}</div></section>
   </main>;
 }
