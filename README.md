@@ -1,128 +1,15 @@
-# iCOOL Photo Branding App
+# iCOOL Photo Branding App - v9 Clean Build
 
-A small Next.js PWA for realistic project-photo enhancement, exact iCOOL logo overlay, fixed footer, and smart slogan generation.
+A clean, reliable Next.js PWA for iCOOL project photo enhancement and branding.
 
-## What it does
+- No `/api/generate`
+- No `/api/generator`
+- No server-side image rendering
+- No Sharp dependency
+- No Vercel payload issue for image generation
+- Image processing happens in the browser using Canvas
+- Exact iCOOL logo included at `public/icool-logo.png`
+- Optional slogan API at `/api/slogan`
+- Works even without `OPENAI_API_KEY`
 
-- Upload real photo
-- Improve lighting, contrast, color and clarity
-- Keep the original scene realistic
-- Add the exact iCOOL logo from `public/icool-logo.png`
-- Add footer: Lebanon | Mobile: 03 715 512 | HVAC SOLAR MEP SOLUTIONS
-- Generate a slogan from the image using OpenAI Vision
-- If no OpenAI key is set, it uses professional fallback slogans
-
-## Setup
-
-```bash
-npm install
-npm run dev
-```
-
-Open:
-
-```bash
-http://localhost:3000
-```
-
-## Environment variable on Vercel
-
-Add:
-
-```bash
-OPENAI_API_KEY=your_key_here
-```
-
-Optional:
-
-```bash
-OPENAI_MODEL=gpt-4.1-mini
-```
-
-## Deploy to Vercel
-
-1. Upload this folder to GitHub.
-2. Import the repository in Vercel.
-3. Add `OPENAI_API_KEY` in Project Settings > Environment Variables.
-4. Deploy.
-5. On iPhone: open the Vercel link in Safari > Share > Add to Home Screen.
-
-## Important
-
-This app does not regenerate the full image. It uses photo finishing and overlays, so faces and project details remain natural.
-
-
-## Fix included in v2
-
-This version fixes the Vercel error:
-
-`Module not found: Can't resolve '@/lib/design'`
-
-It adds `jsconfig.json`, changes the API route import to a relative import, and includes a compatibility route at `/api/generator`.
-
-
-## v3 fixes
-
-- Fixed settings button touch on iPhone using `onPointerUp`, high `z-index`, and safe-area support.
-- Settings now persist in `localStorage`.
-- Parameters are now actually sent to the API: project type, cleanup strength, logo scale, footer scale, slogan override.
-- Fixed Sharp processing bug by not calling `median(0)`.
-- Added robust logo path using `process.cwd()`.
-- Kept `/api/generator` as a compatibility route, but the main route is `/api/generate`.
-
-
-## v4 fix for HTML error
-
-If the app shows `Generation failed: <!DOCTYPE html>`, the frontend is receiving a web page instead of an image from the API.
-
-This version includes both `/api/generate` and `/api/generator`, health checks, safer API imports, and clearer frontend errors.
-
-After deploying, open: `https://YOUR-VERCEL-DOMAIN/api/generate`
-
-It must show: `iCOOL generate API is working`
-
-If it does not, the API files were not uploaded in the root project folder.
-
-
-## v5 fix for FUNCTION_PAYLOAD_TOO_LARGE
-
-Vercel Functions have a request/response payload limit. Large iPhone photos can exceed it before the API route starts.
-
-This version fixes it by:
-- compressing and resizing the image in the browser before upload,
-- keeping the uploaded file around 3.2 MB or less,
-- returning JPEG instead of PNG to avoid response payload limits,
-- using a smaller 768px preview image only for AI slogan generation.
-
-After deployment, the app displays:
-- original selected photo size,
-- compressed upload size.
-
-
-## v6 hotfix
-
-- Shows `v6 Payload Safe Mode is active`.
-- Shows `Original` and `Upload to Vercel` sizes.
-- Compresses images in the browser to about 1.8 MB.
-- Blocks upload if compressed file remains above 2.3 MB.
-- Server rejects anything above 2.6 MB.
-- If you still see payload error and do not see Original/Upload size box, you are still running an old `app/page.jsx`.
-
-## v7 Real Canvas Mode
-Final image is now created in the browser with Canvas. This removes server-side SVG font boxes and Vercel payload problems. API is used only for optional slogan generation.
-
-
-## v8 Photo Enhancer
-
-This version adds real client-side photo enhancement:
-- Auto levels based on image histogram
-- Shadow recovery
-- Highlight control
-- Contrast correction
-- Vibrance and saturation correction
-- Warmth correction
-- Real unsharp-mask sharpening
-- Enhancement modes: Natural, Pro, Premium
-- Output size modes: 1600, 1800, 2200
-
-The app still keeps the original scene real and does not regenerate faces or equipment.
+Deploy the project root directly to Vercel.
