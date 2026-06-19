@@ -50,3 +50,12 @@ OPENAI_MODEL=gpt-4.1-mini
 ## Important
 
 This app does not regenerate the full image. It uses photo finishing and overlays, so faces and project details remain natural.
+
+
+## Fix included in v2
+
+This version fixes the Vercel error:
+
+`Module not found: Can't resolve '@/lib/design'`
+
+It adds `jsconfig.json`, changes the API route import to a relative import, and includes a compatibility route at `/api/generator`.
