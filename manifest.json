@@ -1,0 +1,16 @@
+{
+  "name": "iCOOL Photo Branding",
+  "short_name": "iCOOL Photos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eef3f8",
+  "theme_color": "#005696",
+  "icons": [
+    {
+      "src": "/icool-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
