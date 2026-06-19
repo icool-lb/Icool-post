@@ -11,3 +11,10 @@ Important:
 - Works without OPENAI_API_KEY using fallback slogans
 
 Upload project root directly to GitHub.
+
+
+## v11 fix
+- Rebuilt `public/icool-logo.png` as a real transparent PNG.
+- Fixed portrait footer spacing and kept `Mobile: 03 715 512`.
+- No `/api/generate`.
+- No `/api/generator`.
