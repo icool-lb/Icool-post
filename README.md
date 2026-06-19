@@ -59,3 +59,41 @@ This version fixes the Vercel error:
 `Module not found: Can't resolve '@/lib/design'`
 
 It adds `jsconfig.json`, changes the API route import to a relative import, and includes a compatibility route at `/api/generator`.
+
+
+## v3 fixes
+
+- Fixed settings button touch on iPhone using `onPointerUp`, high `z-index`, and safe-area support.
+- Settings now persist in `localStorage`.
+- Parameters are now actually sent to the API: project type, cleanup strength, logo scale, footer scale, slogan override.
+- Fixed Sharp processing bug by not calling `median(0)`.
+- Added robust logo path using `process.cwd()`.
+- Kept `/api/generator` as a compatibility route, but the main route is `/api/generate`.
+
+
+## v4 fix for HTML error
+
+If the app shows `Generation failed: <!DOCTYPE html>`, the frontend is receiving a web page instead of an image from the API.
+
+This version includes both `/api/generate` and `/api/generator`, health checks, safer API imports, and clearer frontend errors.
+
+After deploying, open: `https://YOUR-VERCEL-DOMAIN/api/generate`
+
+It must show: `iCOOL generate API is working`
+
+If it does not, the API files were not uploaded in the root project folder.
+
+
+## v5 fix for FUNCTION_PAYLOAD_TOO_LARGE
+
+Vercel Functions have a request/response payload limit. Large iPhone photos can exceed it before the API route starts.
+
+This version fixes it by:
+- compressing and resizing the image in the browser before upload,
+- keeping the uploaded file around 3.2 MB or less,
+- returning JPEG instead of PNG to avoid response payload limits,
+- using a smaller 768px preview image only for AI slogan generation.
+
+After deployment, the app displays:
+- original selected photo size,
+- compressed upload size.
