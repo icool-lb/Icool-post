@@ -2,13 +2,19 @@ import "./globals.css";
 
 export const metadata = {
   title: "iCOOL Photo Branding",
-  description: "Realistic photo enhancement, exact iCOOL logo, footer and smart slogans.",
+  description: "Professional iCOOL photo finishing, branding, footer and slogan.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     title: "iCOOL Photos",
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }) {
