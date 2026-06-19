@@ -97,3 +97,13 @@ This version fixes it by:
 After deployment, the app displays:
 - original selected photo size,
 - compressed upload size.
+
+
+## v6 hotfix
+
+- Shows `v6 Payload Safe Mode is active`.
+- Shows `Original` and `Upload to Vercel` sizes.
+- Compresses images in the browser to about 1.8 MB.
+- Blocks upload if compressed file remains above 2.3 MB.
+- Server rejects anything above 2.6 MB.
+- If you still see payload error and do not see Original/Upload size box, you are still running an old `app/page.jsx`.
