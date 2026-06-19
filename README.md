@@ -1,15 +1,13 @@
-# iCOOL Photo Branding App - v9 Clean Build
+# iCOOL Photo Branding App - v10 Pro
 
-A clean, reliable Next.js PWA for iCOOL project photo enhancement and branding.
+Ready for GitHub + Vercel.
 
-- No `/api/generate`
-- No `/api/generator`
-- No server-side image rendering
-- No Sharp dependency
-- No Vercel payload issue for image generation
-- Image processing happens in the browser using Canvas
-- Exact iCOOL logo included at `public/icool-logo.png`
-- Optional slogan API at `/api/slogan`
-- Works even without `OPENAI_API_KEY`
+Important:
+- No app/api/generate
+- No app/api/generator
+- Image rendering is done in the browser with Canvas
+- Transparent logo is in public/icool-logo.png
+- Optional slogan API is app/api/slogan/route.js
+- Works without OPENAI_API_KEY using fallback slogans
 
-Deploy the project root directly to Vercel.
+Upload project root directly to GitHub.
