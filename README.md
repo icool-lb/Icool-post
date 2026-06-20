@@ -1,23 +1,24 @@
-# iCOOL Photo Branding App - v14 Pro Custom Logo + Footer Colors
+# iCOOL Photo Branding App - v13 Pro Position + Fog Controls
 
-Professional Next.js app for branding project photos.
+Final clean app for GitHub + Vercel.
 
-## Added on top of v13
-- Keep the same professional v13 interface.
-- Upload a custom logo.
-- Revert anytime to the default iCOOL logo.
-- Change footer colors (main blue, deep blue, orange, text color).
-- Keep custom footer content: location, phone, services.
-- Keep frame selection before generation.
-- Keep move + zoom control inside the frame.
-- Keep logo position, slogan position, slogan font and fog controls.
+Includes frame selection, pan/zoom, real transparent iCOOL logo, foggy logo plate, editable footer address/phone/services, client-side enhancement, client-side small mess cleanup, optional AI cleanup at `/api/ai-cleanup`, and optional smart slogans at `/api/slogan`.
 
-## Run locally
-```bash
-npm install
-npm run dev
-```
+No `/api/generate`. No `/api/generator`.
 
 ## Deploy
-Upload the project root to GitHub, then import it in Vercel.
-No extra environment variables are required for the stable local version.
+Upload ZIP contents directly to the GitHub repository root.
+
+## Optional Vercel environment variables
+`OPENAI_API_KEY` for AI cleanup and smart slogan.
+`OPENAI_MODEL=gpt-4.1-mini`
+`OPENAI_IMAGE_MODEL=gpt-image-1`
+
+
+## New in v13
+- Move logo position
+- Fog background behind logo shape directly
+- Move slogan position
+- Fog background behind slogan text
+- Change slogan font family
+- Change slogan font size
