@@ -1,20 +1,15 @@
-# iCOOL Photo Branding App - v10 Pro
+# iCOOL Photo Branding App - v12 Pro Frame + Cleanup
 
-Ready for GitHub + Vercel.
+Final clean app for GitHub + Vercel.
 
-Important:
-- No app/api/generate
-- No app/api/generator
-- Image rendering is done in the browser with Canvas
-- Transparent logo is in public/icool-logo.png
-- Optional slogan API is app/api/slogan/route.js
-- Works without OPENAI_API_KEY using fallback slogans
+Includes frame selection, pan/zoom, real transparent iCOOL logo, foggy logo plate, editable footer address/phone/services, client-side enhancement, client-side small mess cleanup, optional AI cleanup at `/api/ai-cleanup`, and optional smart slogans at `/api/slogan`.
 
-Upload project root directly to GitHub.
+No `/api/generate`. No `/api/generator`.
 
+## Deploy
+Upload ZIP contents directly to the GitHub repository root.
 
-## v11 fix
-- Rebuilt `public/icool-logo.png` as a real transparent PNG.
-- Fixed portrait footer spacing and kept `Mobile: 03 715 512`.
-- No `/api/generate`.
-- No `/api/generator`.
+## Optional Vercel environment variables
+`OPENAI_API_KEY` for AI cleanup and smart slogan.
+`OPENAI_MODEL=gpt-4.1-mini`
+`OPENAI_IMAGE_MODEL=gpt-image-1`
