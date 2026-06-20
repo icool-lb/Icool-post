@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const VERSION = "v14 Pro Custom Logo + Footer Colors";
+const VERSION = "v15 Pro - v13 Quality + Custom Logo + Real AI";
 
 const FRAME_PRESETS = {
   portrait: { label: "Portrait 4:5", w: 1080, h: 1350 },
@@ -152,7 +152,7 @@ function getEnhanceProfile(mode) {
       exposure: 1.052,
       contrast: 1.22,
       saturation: 1.12,
-      vibrance: 0.3,
+      vibrance: 0.30,
       shadows: 19,
       highlights: -13,
       warmth: 1.4,
@@ -430,7 +430,7 @@ function pin(ctx, x, y, size, color) {
   ctx.lineTo(x + size * 0.22, y + size * 0.1);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = color;
+  ctx.fillStyle = "#005696";
   ctx.beginPath();
   ctx.arc(x, y - size * 0.1, size * 0.1, 0, Math.PI * 2);
   ctx.fill();
@@ -508,29 +508,28 @@ function drawFooterLandscape(ctx, w, h, fh, settings) {
   ctx.fill();
   pin(ctx, x1, cy, icon * 0.95, blue);
   ctx.fillStyle = white;
-  ctx.font = `700 ${fitText(ctx, settings.locationText || "Lebanon", w * 0.16, fs, 700)}px Arial, Helvetica, sans-serif`;
   ctx.fillText(settings.locationText || "Lebanon", w * 0.095, cy);
 
   ctx.globalAlpha = 0.75;
   ctx.strokeStyle = white;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(w * 0.29, y + fh * 0.23);
-  ctx.lineTo(w * 0.29, y + fh * 0.77);
+  ctx.moveTo(w * 0.285, y + fh * 0.23);
+  ctx.lineTo(w * 0.285, y + fh * 0.77);
   ctx.stroke();
   ctx.globalAlpha = 1;
 
   const phoneText = settings.phoneText || "Mobile: 03 715 512";
-  const phoneCircleX = w * 0.36;
-  const phoneTextX = w * 0.39;
+  const px = w * 0.34;
+  const phoneX = w * 0.365;
   ctx.beginPath();
-  ctx.arc(phoneCircleX, cy, icon * 0.56, 0, Math.PI * 2);
+  ctx.arc(px, cy, icon * 0.56, 0, Math.PI * 2);
   ctx.fillStyle = white;
   ctx.fill();
-  phone(ctx, phoneCircleX, cy, icon * 0.95, blue);
+  phone(ctx, px, cy, icon * 0.95, blue);
   ctx.fillStyle = white;
-  ctx.font = `700 ${fitText(ctx, phoneText, w * 0.22, fs, 700)}px Arial, Helvetica, sans-serif`;
-  ctx.fillText(phoneText, phoneTextX, cy);
+  ctx.font = `700 ${fitText(ctx, phoneText, w * 0.225, fs, 700)}px Arial, Helvetica, sans-serif`;
+  ctx.fillText(phoneText, phoneX, cy);
 
   const service = settings.servicesText || "HVAC SOLAR MEP SOLUTIONS";
   const sfs = fitText(ctx, service, w * 0.31, Math.max(22, fh * 0.23), 800);
@@ -561,7 +560,7 @@ function drawFooterPortrait(ctx, w, h, fh, settings) {
   ctx.fillStyle = white;
 
   const loc = settings.locationText || "Lebanon";
-  const locSize = fitText(ctx, loc, w * 0.21, Math.max(14, topH * 0.25), 700);
+  const locSize = fitText(ctx, loc, w * 0.22, Math.max(14, topH * 0.25), 700);
   ctx.font = `700 ${locSize}px Arial, Helvetica, sans-serif`;
   const x1 = w * 0.075;
   ctx.beginPath();
@@ -573,16 +572,16 @@ function drawFooterPortrait(ctx, w, h, fh, settings) {
   ctx.fillText(loc, w * 0.12, cy);
 
   const ptext = settings.phoneText || "Mobile: 03 715 512";
-  const psize = fitText(ctx, ptext, w * 0.33, Math.max(13, topH * 0.235), 700);
+  const psize = fitText(ctx, ptext, w * 0.38, Math.max(13, topH * 0.235), 700);
   ctx.font = `700 ${psize}px Arial, Helvetica, sans-serif`;
-  const x2 = w * 0.48;
+  const x2 = w * 0.525;
   ctx.beginPath();
   ctx.arc(x2, cy, icon * 0.53, 0, Math.PI * 2);
   ctx.fillStyle = white;
   ctx.fill();
   phone(ctx, x2, cy, icon * 0.92, blue);
   ctx.fillStyle = white;
-  ctx.fillText(ptext, w * 0.525, cy);
+  ctx.fillText(ptext, w * 0.57, cy);
 
   const service = settings.servicesText || "HVAC SOLAR MEP SOLUTIONS";
   const sfs = fitText(ctx, service, w * 0.86, Math.max(14, bottomH * 0.4), 800);
@@ -608,24 +607,38 @@ function logoPlacement(w, h, settings, fh, logo) {
 
 function drawLogoFog(ctx, logo, x, y, w, h, mode) {
   if (!logo || mode === "none") return;
-  const alpha = mode === "strong" ? 0.55 : 0.32;
-  const blurAmount = mode === "strong" ? Math.max(18, w * 0.08) : Math.max(12, w * 0.06);
 
+  const strong = mode === "strong";
+  const blurAmount = strong ? Math.max(24, w * 0.105) : Math.max(16, w * 0.075);
+
+  // 1) A soft irregular halo behind the logo, not a rectangular plate.
+  const cx = x + w * 0.50;
+  const cy = y + h * 0.52;
+  const grad = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.10, cx, cy, Math.max(w, h) * 0.72);
+  grad.addColorStop(0, strong ? "rgba(255,255,255,0.58)" : "rgba(255,255,255,0.38)");
+  grad.addColorStop(0.58, strong ? "rgba(255,255,255,0.24)" : "rgba(255,255,255,0.16)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.save();
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, w * 0.72, h * 1.15, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // 2) A blurred copy of the logo silhouette, so the fog follows the logo shape.
   const fog = document.createElement("canvas");
-  fog.width = Math.ceil(w + blurAmount * 2.8);
-  fog.height = Math.ceil(h + blurAmount * 2.8);
+  fog.width = Math.ceil(w + blurAmount * 4);
+  fog.height = Math.ceil(h + blurAmount * 4);
   const fctx = fog.getContext("2d");
   const dx = (fog.width - w) / 2;
   const dy = (fog.height - h) / 2;
 
   fctx.save();
-  try {
-    fctx.filter = `blur(${blurAmount}px)`;
-  } catch {}
-  fctx.globalAlpha = alpha;
+  try { fctx.filter = `blur(${blurAmount}px)`; } catch {}
+  fctx.globalAlpha = strong ? 0.78 : 0.55;
   fctx.drawImage(logo, dx, dy, w, h);
   fctx.globalCompositeOperation = "source-in";
-  fctx.fillStyle = "rgba(255,255,255,0.95)";
+  fctx.fillStyle = "rgba(255,255,255,0.96)";
   fctx.fillRect(0, 0, fog.width, fog.height);
   fctx.restore();
 
@@ -634,8 +647,8 @@ function drawLogoFog(ctx, logo, x, y, w, h, mode) {
 
 function drawTextFog(ctx, lines, x, y, lineH, fontSize, family, mode) {
   if (!lines?.length || mode === "none") return;
-  const alpha = mode === "strong" ? 0.46 : 0.25;
-  const blurAmount = mode === "strong" ? Math.max(10, fontSize * 0.55) : Math.max(8, fontSize * 0.42);
+  const alpha = mode === "strong" ? 0.62 : 0.38;
+  const blurAmount = mode === "strong" ? Math.max(12, fontSize * 0.62) : Math.max(9, fontSize * 0.48);
 
   const temp = document.createElement("canvas");
   temp.width = ctx.canvas.width;
@@ -707,16 +720,82 @@ function drawLogoAndSlogan(ctx, w, h, logo, settings, slogan, fh) {
 
 async function getSlogan(file, settings) {
   if (settings.customSlogan?.trim()) return settings.customSlogan.trim();
-  return pickFallbackSlogan(settings.industry);
+  const fallback = pickFallbackSlogan(settings.industry);
+
+  try {
+    const { image, url } = await loadImageFromFile(file);
+    const maxSide = 520;
+    const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(image.naturalWidth * scale);
+    canvas.height = Math.round(image.naturalHeight * scale);
+    const ctx = canvas.getContext("2d", { alpha: false });
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+
+    const response = await fetch("/api/slogan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: canvas.toDataURL("image/jpeg", 0.68), industry: settings.industry }),
+    });
+
+    if (!response.ok) return fallback;
+    const data = await response.json();
+    return data.slogan || fallback;
+  } catch {
+    return fallback;
+  }
 }
 
-async function applyOptionalAiCleanup(canvas, settings, setStage) {
-  if (settings.aiCleanup !== "on") return canvas;
-  setStage("AI cleanup is optional and needs server setup. Using local professional cleanup...");
-  return canvas;
+async function applyOptionalAiCleanup(canvas, settings, setStage, setAiStatus) {
+  if (settings.aiCleanup !== "on") {
+    setAiStatus?.("AI cleanup: off");
+    return canvas;
+  }
+
+  try {
+    setStage("Professional AI cleanup...");
+    setAiStatus?.("AI cleanup: sending image to /api/ai-cleanup...");
+
+    const requestCanvas = document.createElement("canvas");
+    const maxSide = 1280;
+    const scale = Math.min(1, maxSide / Math.max(canvas.width, canvas.height));
+    requestCanvas.width = Math.round(canvas.width * scale);
+    requestCanvas.height = Math.round(canvas.height * scale);
+    const rctx = requestCanvas.getContext("2d", { alpha: false });
+    rctx.drawImage(canvas, 0, 0, requestCanvas.width, requestCanvas.height);
+
+    const response = await fetch("/api/ai-cleanup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image: requestCanvas.toDataURL("image/jpeg", 0.82),
+        cleanupPrompt:
+          "Photorealistic professional cleanup of this real project installation photo. Improve lighting, contrast and clarity. Remove small trash, dust, stains, loose debris, floor clutter and visual mess. Keep all important equipment, wiring routes, walls, inverter, electrical panels, people/faces if present, exact camera angle and realistic proportions. Do not add branding, text or logo. Do not make it look AI-generated."
+      }),
+    });
+
+    const data = await response.json().catch(() => null);
+    if (!response.ok || !data?.ok || !data?.image) {
+      setAiStatus?.(`AI cleanup failed: ${data?.message || response.statusText || "unknown error"}${data?.detail ? " | " + data.detail : ""}`);
+      return canvas;
+    }
+
+    const cleaned = await loadImageFromDataUrl(data.image);
+    const out = document.createElement("canvas");
+    out.width = canvas.width;
+    out.height = canvas.height;
+    const octx = out.getContext("2d", { alpha: false });
+    octx.drawImage(cleaned, 0, 0, out.width, out.height);
+    setAiStatus?.("AI cleanup: applied successfully");
+    return out;
+  } catch (error) {
+    setAiStatus?.("AI cleanup error: " + String(error?.message || error));
+    return canvas;
+  }
 }
 
-async function createFinalImage({ file, settings, transform, logo, setStage }) {
+async function createFinalImage({ file, settings, transform, logo, setStage, setAiStatus }) {
   const { image, url } = await loadImageFromFile(file);
   try {
     setStage("Cropping frame...");
@@ -729,7 +808,7 @@ async function createFinalImage({ file, settings, transform, logo, setStage }) {
     setStage("Cleaning small mess...");
     applyLocalCleanup(ctx, w, h, settings.cleanup);
 
-    canvas = await applyOptionalAiCleanup(canvas, settings, setStage);
+    canvas = await applyOptionalAiCleanup(canvas, settings, setStage, setAiStatus);
     ctx = canvas.getContext("2d", { alpha: false });
     w = canvas.width;
     h = canvas.height;
@@ -777,6 +856,7 @@ export default function Page() {
   const [result, setResult] = useState("");
   const [stage, setStage] = useState("");
   const [isWorking, setIsWorking] = useState(false);
+  const [aiStatus, setAiStatus] = useState("AI cleanup: off");
   const [fileSize, setFileSize] = useState("");
   const [transform, setTransform] = useState({ zoom: 1, x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
@@ -785,7 +865,7 @@ export default function Page() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("icoolV14Settings") || localStorage.getItem("icoolV13Settings");
+      const saved = localStorage.getItem("icoolV15Settings") || localStorage.getItem("icoolV13Settings");
       if (saved) setSettings({ ...defaultSettings, ...JSON.parse(saved) });
     } catch {}
   }, []);
@@ -801,7 +881,7 @@ export default function Page() {
     setSettings((prev) => {
       const next = { ...prev, [key]: value };
       try {
-        localStorage.setItem("icoolV14Settings", JSON.stringify(next));
+        localStorage.setItem("icoolV15Settings", JSON.stringify(next));
       } catch {}
       return next;
     });
@@ -838,14 +918,14 @@ export default function Page() {
     }
   }
 
-  function resetFrame() {
-    setTransform({ zoom: 1, x: 0, y: 0 });
-  }
-
   function resetCustomLogo() {
     updateSetting("customLogoDataUrl", "");
     updateSetting("customLogoName", "");
     setResult("");
+  }
+
+  function resetFrame() {
+    setTransform({ zoom: 1, x: 0, y: 0 });
   }
 
   function onPointerDown(e) {
@@ -888,6 +968,7 @@ export default function Page() {
         transform,
         logo: logoRef.current,
         setStage,
+        setAiStatus,
       });
       setResult(final);
       setStage("");
@@ -914,22 +995,21 @@ export default function Page() {
   const frame = getFrame(settings);
   const canGenerate = useMemo(() => !!file && !isWorking, [file, isWorking]);
   const overlay = previewOverlayStyle(settings);
-  const headerLogo = settings.customLogoDataUrl || "/icool-logo.png";
 
   return (
     <main>
       <header className="hero">
         <div>
-          <img className="brandLogo" src={headerLogo} alt="Brand logo" />
+          <img className="brandLogo" src={settings.customLogoDataUrl || "/icool-logo.png"} alt="Brand logo" />
           <h1>iCOOL Photo Branding App</h1>
           <p>
-            Continue on the professional v13 interface with custom logo upload,
-            custom footer colors, flexible frame control, and a polished branded export.
+            Same v13 quality, with custom logo upload, real AI cleanup status, stronger fog,
+            and editable footer colors for professional branded photos.
           </p>
         </div>
         <div className="versionCard">
           <b>{VERSION}</b>
-          <span>Same professional interface, now with uploaded logo support and editable footer colors.</span>
+          <span>Built on v13. Adds custom logo, footer colors, stronger fog and visible AI cleanup status.</span>
         </div>
       </header>
 
@@ -990,13 +1070,15 @@ export default function Page() {
 
           <label>Professional AI cleanup</label>
           <select value={settings.aiCleanup} onChange={(e) => updateSetting("aiCleanup", e.target.value)}>
-            <option value="off">Off - local only</option>
-            <option value="on">On - reserved for future server setup</option>
+            <option value="off">Off - no AI cleanup</option>
+            <option value="on">On - requires OPENAI_API_KEY</option>
           </select>
 
           <div className="hint">
-            This build is stable on GitHub + Vercel without server API dependencies.
-            Local enhancement and cleanup remain active.
+            AI cleanup is optional. With OPENAI_API_KEY in Vercel and Professional AI cleanup = On,
+            the app calls /api/ai-cleanup before adding logo/footer.
+            <br />
+            <b>{aiStatus}</b>
           </div>
 
           <label>Output quality</label>
@@ -1008,11 +1090,9 @@ export default function Page() {
 
           <div className="sectionTitle">Logo controls</div>
           <label>Upload custom logo</label>
-          <input type="file" accept="image/png,image/webp,image/svg+xml,image/jpeg" onChange={onLogoFileChange} />
+          <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={onLogoFileChange} />
           {(settings.customLogoDataUrl || settings.customLogoName) && (
-            <div className="fileInfo">
-              Active logo: {settings.customLogoName || "Custom uploaded logo"}
-            </div>
+            <div className="fileInfo">Active logo: {settings.customLogoName || "Custom uploaded logo"}</div>
           )}
           <div className="inlineButtons">
             <button type="button" className="secondaryBtn smallBtn" onClick={resetCustomLogo}>
@@ -1116,7 +1196,7 @@ export default function Page() {
               <input type="color" value={settings.footerOrangeColor} onChange={(e) => updateSetting("footerOrangeColor", e.target.value)} />
             </label>
             <label className="colorField">
-              <span>Text / icon color</span>
+              <span>Text/icon color</span>
               <input type="color" value={settings.footerTextColor} onChange={(e) => updateSetting("footerTextColor", e.target.value)} />
             </label>
           </div>
@@ -1127,9 +1207,8 @@ export default function Page() {
             onClick={() => {
               setSettings(defaultSettings);
               localStorage.removeItem("icoolV13Settings");
-              localStorage.removeItem("icoolV14Settings");
+              localStorage.removeItem("icoolV15Settings");
               resetFrame();
-              setResult("");
             }}
           >
             Reset Settings

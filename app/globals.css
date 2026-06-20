@@ -35,10 +35,8 @@ main {
 .brandLogo {
   width: 230px;
   max-width: 70%;
-  max-height: 94px;
   display: block;
   margin: 0 0 18px;
-  object-fit: contain;
 }
 
 h1 {
@@ -108,16 +106,6 @@ input[type="range"] {
   accent-color: var(--blue);
 }
 
-input[type="color"] {
-  width: 100%;
-  min-height: 46px;
-  padding: 6px;
-  border: 1px solid #c9d6e3;
-  border-radius: 14px;
-  background: #fff;
-  cursor: pointer;
-}
-
 button,
 .actions a {
   width: 100%;
@@ -159,12 +147,6 @@ button:disabled {
   box-shadow: none;
 }
 
-.inlineButtons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .fileInfo,
 .hint {
   margin-top: 12px;
@@ -191,22 +173,6 @@ button:disabled {
   font-size: 15px;
   letter-spacing: .3px;
   text-transform: uppercase;
-}
-
-.colorGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.colorField {
-  margin: 0;
-}
-
-.colorField span {
-  display: block;
-  margin-bottom: 8px;
 }
 
 .frameTools {
@@ -362,8 +328,7 @@ button:disabled {
   }
 
   .hero,
-  .grid,
-  .colorGrid {
+  .grid {
     grid-template-columns: 1fr;
   }
 
@@ -379,4 +344,35 @@ button:disabled {
     grid-template-columns: 1fr;
     flex-direction: column;
   }
+}
+
+/* v15 additions */
+.brandLogo { max-height: 94px; object-fit: contain; }
+input[type="color"] {
+  width: 100%;
+  min-height: 46px;
+  padding: 6px;
+  border: 1px solid #c9d6e3;
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+}
+.inlineButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.colorGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+.colorField { margin: 0; }
+.colorField span {
+  display: block;
+  margin-bottom: 8px;
+}
+@media (max-width: 980px) {
+  .colorGrid { grid-template-columns: 1fr; }
 }
