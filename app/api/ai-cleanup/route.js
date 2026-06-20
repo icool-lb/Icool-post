@@ -1,4 +1,89 @@
-export const runtime='nodejs'; export const dynamic='force-dynamic'; export const maxDuration=60;
-function j(d,s=200){return Response.json(d,{status:s})}
-export async function GET(){return j({ok:true,version:'v12-pro',message:'iCOOL AI cleanup API is available'})}
-export async function POST(req){try{const {image,cleanupPrompt}=await req.json(); if(!process.env.OPENAI_API_KEY) return j({ok:false,fallback:true,message:'OPENAI_API_KEY is not configured. Client cleanup will be used.'}); if(!image||!String(image).startsWith('data:image/')) return j({ok:false,fallback:true,message:'Missing image data.'}); const base64=image.split(',')[1]; const mime=image.substring(5,image.indexOf(';'))||'image/jpeg'; const bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0)); if(bytes.byteLength>3.2*1024*1024) return j({ok:false,fallback:true,message:'Image too large for AI cleanup. Client cleanup will be used.'}); const form=new FormData(); form.append('model',process.env.OPENAI_IMAGE_MODEL||'gpt-image-1'); form.append('prompt',cleanupPrompt||'Clean the project photo professionally. Remove small trash, dust, debris, plastic bags, loose wires on the ground, stains and visual clutter. Preserve the real building, equipment, materials, faces, people, camera angle and all important project details. Do not make it look artificial or generated. Keep it photorealistic.'); form.append('image',new Blob([bytes],{type:mime}),'photo.jpg'); form.append('n','1'); form.append('quality','medium'); const r=await fetch('https://api.openai.com/v1/images/edits',{method:'POST',headers:{Authorization:`Bearer ${process.env.OPENAI_API_KEY}`},body:form}); if(!r.ok){const e=await r.text().catch(()=>''); return j({ok:false,fallback:true,message:'AI cleanup failed. Client cleanup will be used.',detail:e.slice(0,500)})} const d=await r.json(); const b64=d?.data?.[0]?.b64_json; if(!b64) return j({ok:false,fallback:true,message:'AI cleanup returned no image.'}); return j({ok:true,image:`data:image/png;base64,${b64}`})}catch(e){return j({ok:false,fallback:true,message:'AI cleanup route error. Client cleanup will be used.',detail:String(e?.message||e).slice(0,500)})}}
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
+function json(data, status = 200) {
+  return Response.json(data, { status });
+}
+
+export async function GET() {
+  return json({ ok: true, version: "v15-pro", message: "iCOOL AI cleanup API is available" });
+}
+
+export async function POST(req) {
+  try {
+    const { image, cleanupPrompt } = await req.json();
+
+    if (!process.env.OPENAI_API_KEY) {
+      return json({
+        ok: false,
+        fallback: true,
+        message: "OPENAI_API_KEY is not configured in Vercel."
+      });
+    }
+
+    if (!image || !String(image).startsWith("data:image/")) {
+      return json({ ok: false, fallback: true, message: "Missing image data." });
+    }
+
+    const base64 = image.split(",")[1];
+    const mime = image.substring(5, image.indexOf(";")) || "image/jpeg";
+    const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+
+    if (bytes.byteLength > 8 * 1024 * 1024) {
+      return json({
+        ok: false,
+        fallback: true,
+        message: "Image payload is too large. Use Professional or Fast output instead of High Quality."
+      });
+    }
+
+    const form = new FormData();
+    form.append("model", process.env.OPENAI_IMAGE_MODEL || "gpt-image-1");
+    form.append("image[]", new Blob([bytes], { type: mime }), "photo.jpg");
+    form.append(
+      "prompt",
+      cleanupPrompt ||
+        "Photorealistic professional cleanup of this real installation/project photo. Improve lighting, clarity, white balance and contrast. Remove small trash, dust, stains, debris and clutter. Preserve all equipment, electrical wiring routes, walls, camera angle, proportions, and people/faces if present. Do not add logo, text, branding or artificial objects. Keep the result realistic."
+    );
+    form.append("n", "1");
+    form.append("quality", process.env.OPENAI_IMAGE_QUALITY || "medium");
+    form.append("size", "auto");
+    form.append("background", "auto");
+    form.append("input_fidelity", "high");
+    form.append("output_format", "jpeg");
+    form.append("output_compression", "92");
+
+    const response = await fetch("https://api.openai.com/v1/images/edits", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+      body: form,
+    });
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      return json({
+        ok: false,
+        fallback: true,
+        message: "OpenAI image edit failed.",
+        detail: detail.slice(0, 900),
+      });
+    }
+
+    const data = await response.json();
+    const b64 = data?.data?.[0]?.b64_json;
+
+    if (!b64) {
+      return json({ ok: false, fallback: true, message: "OpenAI returned no image." });
+    }
+
+    return json({ ok: true, image: `data:image/jpeg;base64,${b64}` });
+  } catch (error) {
+    return json({
+      ok: false,
+      fallback: true,
+      message: "AI cleanup route error.",
+      detail: String(error?.message || error).slice(0, 900),
+    });
+  }
+}
